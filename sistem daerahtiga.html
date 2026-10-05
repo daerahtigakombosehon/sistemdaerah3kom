@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Database GIDI Daerah Tiga Kombosehon</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gidi: {
+                            blue: '#0F4C81',
+                            darkblue: '#0A3357',
+                            gold: '#D4AF37',
+                            goldhover: '#B59228',
+                            light: '#F4F7FA'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7fa; }
+        .sidebar-item-active { background-color: rgba(255, 255, 255, 0.15); border-left: 4px solid #D4AF37; font-weight: 600; }
+        .modal-bg { background-color: rgba(0, 0, 0, 0.5); }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white !important; font-size: 12pt; }
+            .print-container { padding: 0 !important; margin: 0 !important; width: 100% !important; }
+        }
+        .print-only { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 antialiased">
+
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- LOGIN SCREEN SECTION -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900 bg-opacity-95 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border border-gray-100 transition-all duration-300">
+            <!-- Header Header Logo -->
+            <div class="bg-gradient-to-r from-gidi-darkblue to-gidi-blue p-6 text-center text-white relative">
+                <div class="w-24 h-24 mx-auto mb-3 rounded-full bg-white p-2 shadow-lg flex items-center justify-center overflow-hidden border-2 border-gidi-gold">
+                    <img src="https://i.ibb.co.com/j9KYKHft/images.jpg" alt="Logo GIDI" class="max-h-full max-w-full object-contain" onerror="this.onerror=null; this.src='https://placehold.co/100x100/0F4C81/FFFFFF?text=GIDI';">
+                </div>
+                <h2 class="text-xs font-bold tracking-widest text-gidi-gold uppercase mb-1">GEREJA INJILI DI INDONESIA (GIDI)</h2>
+                <h1 class="text-base font-extrabold leading-tight">KLASIS KOMA WILAYAH BOGO</h1>
+                <p class="text-xs text-blue-200 mt-1 font-medium">PELINDUNG YESUS KRISTUS - DAERAH TIGA KOMBOSEHON</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" onsubmit="handleLogin(event)" class="p-6 space-y-4">
+                <div class="text-center mb-2">
+                    <h3 class="text-lg font-bold text-gray-800">Sistem Database Manajemen</h3>
+                    <p class="text-xs text-gray-500">Silahkan masuk sebagai Administrator Database</p>
+                </div>
+
+                <div id="login-error" class="hidden p-3 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs rounded">
+                    Username atau password salah! (default: admin / daerah)
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <i class="fas fa-user text-sm"></i>
+                        </span>
+                        <input type="text" id="login-username" required class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gidi-blue focus:border-transparent" placeholder="Masukkan username">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <i class="fas fa-lock text-sm"></i>
+                        </span>
+                        <input type="password" id="login-password" required class="w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gidi-blue focus:border-transparent" placeholder="Masukkan password">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-gidi-blue hover:bg-gidi-darkblue text-white font-bold rounded-lg shadow-md hover:shadow-lg transition duration-200 text-sm flex items-center justify-center gap-2">
+                    <i class="fas fa-sign-in-alt"></i> Masuk Sistem Database
+                </button>
+
+                <div class="pt-3 border-t border-gray-100 text-center text-xs text-gray-500">
+                    <p class="font-medium text-gray-700">Pengurus Daerah Tiga Kombosehon:</p>
+                    <p class="mt-0.5"><span class="font-semibold">Gembala:</span> Pdt. Yapan Endambia, S.Th</p>
+                    <p><span class="font-semibold">Sekretaris:</span> Aprinus Pugumis, S.Pd</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD APP SCREEN -->
+    <div id="main-app" class="hidden min-h-screen flex flex-col">
+
+        <!-- HEADER TOP BAR -->
+        <header class="bg-gidi-darkblue text-white shadow-md sticky top-0 z-30 no-print">
+            <div class="px-4 py-3 flex items-center justify-between">
+                <!-- Brand Mobile Toggle & Title -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-gidi-gold focus:outline-none">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <img src="https://i.ibb.co.com/j9KYKHft/images.jpg" alt="GIDI Logo" class="w-10 h-10 object-contain rounded-full bg-white p-0.5 border border-gidi-gold" onerror="this.onerror=null; this.src='https://placehold.co/40x40/0F4C81/FFFFFF?text=GIDI';">
+                        <div>
+                            <h1 class="text-sm font-extrabold leading-tight text-white tracking-wide">GIDI DAERAH TIGA KOMBOSEHON</h1>
+                            <p class="text-[10px] text-gidi-gold font-medium">KLASIS KOMA WILAYAH BOGO - PELINDUNG YESUS KRISTUS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leader Summary Info & Admin Action -->
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:flex flex-col text-right text-xs border-r border-blue-800 pr-4">
+                        <span class="font-semibold text-gidi-gold"><i class="fas fa-user-shield mr-1"></i>Pdt. Yapan Endambia, S.Th (Gembala)</span>
+                        <span class="text-gray-300">Aprinus Pugumis, S.Pd (Sekretaris)</span>
+                    </div>
+                    <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                        <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">Keluar</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN BODY WITH SIDEBAR AND CONTENT -->
+        <div class="flex-1 flex overflow-hidden">
+
+            <!-- SIDEBAR NAVIGATION -->
+            <aside id="sidebar" class="w-64 bg-gidi-blue text-white flex-shrink-0 flex flex-col transition-all duration-300 no-print fixed lg:relative z-20 h-[calc(100vh-56px)] -translate-x-full lg:translate-x-0">
+                <div class="p-4 border-b border-blue-700 bg-gidi-darkblue/50 flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gidi-gold"><i class="fas fa-compass mr-2"></i>Menu Navigasi</span>
+                    <span class="text-xs bg-emerald-500 text-white px-2 py-0.5 rounded-full font-semibold">1 Admin</span>
+                </div>
+
+                <nav class="flex-1 overflow-y-auto py-3 px-2 space-y-1 text-xs">
+                    <button onclick="switchView('dashboard')" id="nav-dashboard" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-chart-pie w-6 text-gidi-gold"></i> <span>Dashboard & Overview</span>
+                    </button>
+
+                    <div class="pt-2 pb-1 px-3 text-[10px] font-bold uppercase text-blue-200 tracking-wider">Pilih Jemaat (5 Jemaat)</div>
+                    <div class="space-y-1 pl-1">
+                        <button onclick="switchJemaat('Berea Kobakma 1')" id="nav-jemaat-berea" class="sidebar-jemaat-item w-full flex items-center px-3 py-2 rounded-lg hover:bg-blue-800 text-left transition">
+                            <i class="fas fa-church w-5 text-gray-300 text-xs"></i> <span class="truncate">Berea Kobakma 1</span>
+                        </button>
+                        <button onclick="switchJemaat('Roma Namuragas')" id="nav-jemaat-roma" class="sidebar-jemaat-item w-full flex items-center px-3 py-2 rounded-lg hover:bg-blue-800 text-left transition">
+                            <i class="fas fa-church w-5 text-gray-300 text-xs"></i> <span class="truncate">Roma Namuragas</span>
+                        </button>
+                        <button onclick="switchJemaat('Imanuel 1 Boroges')" id="nav-jemaat-imanuel1" class="sidebar-jemaat-item w-full flex items-center px-3 py-2 rounded-lg hover:bg-blue-800 text-left transition">
+                            <i class="fas fa-church w-5 text-gray-300 text-xs"></i> <span class="truncate">Imanuel 1 Boroges</span>
+                        </button>
+                        <button onclick="switchJemaat('Imanuel 2 Seralema')" id="nav-jemaat-imanuel2" class="sidebar-jemaat-item w-full flex items-center px-3 py-2 rounded-lg hover:bg-blue-800 text-left transition">
+                            <i class="fas fa-church w-5 text-gray-300 text-xs"></i> <span class="truncate">Imanuel 2 Seralema</span>
+                        </button>
+                        <button onclick="switchJemaat('Anugerah Homasam')" id="nav-jemaat-anugerah" class="sidebar-jemaat-item w-full flex items-center px-3 py-2 rounded-lg hover:bg-blue-800 text-left transition">
+                            <i class="fas fa-church w-5 text-gray-300 text-xs"></i> <span class="truncate">Anugerah Homasam</span>
+                        </button>
+                    </div>
+
+                    <div class="pt-3 pb-1 px-3 text-[10px] font-bold uppercase text-blue-200 tracking-wider">Modul Data Daerah</div>
+
+                    <button onclick="switchView('data-baptis')" id="nav-data-baptis" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-water w-6 text-cyan-300"></i> <span>Data Baptis & Belum Baptis</span>
+                    </button>
+
+                    <button onclick="switchView('pendidikan')" id="nav-pendidikan" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-graduation-cap w-6 text-yellow-300"></i> <span>Pendidikan & Sekolah Alkitab</span>
+                    </button>
+
+                    <button onclick="switchView('hamba-tuhan')" id="nav-hamba-tuhan" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-user-tie w-6 text-emerald-300"></i> <span>Hamba-Hamba Tuhan</span>
+                    </button>
+
+                    <button onclick="switchView('pembangunan')" id="nav-pembangunan" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-hammer w-6 text-orange-300"></i> <span>Prog. Kerja & Pembangunan</span>
+                    </button>
+
+                    <button onclick="switchView('aset')" id="nav-aset" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-boxes w-6 text-purple-300"></i> <span>Aset & Inventaris Gereja</span>
+                    </button>
+
+                    <button onclick="switchView('keuangan')" id="nav-keuangan" class="sidebar-item w-full flex items-center px-3 py-2.5 rounded-lg hover:bg-blue-800 transition">
+                        <i class="fas fa-chart-line w-6 text-green-300"></i> <span>Grafik & Laporan Keuangan</span>
+                    </button>
+
+                    <div class="pt-4 border-t border-blue-700/60 mt-4">
+                        <button onclick="triggerPrintReport()" class="w-full py-2.5 px-3 bg-gidi-gold hover:bg-gidi-goldhover text-slate-900 font-bold rounded-lg shadow flex items-center justify-center gap-2 transition">
+                            <i class="fas fa-print"></i> <span>Cetak Laporan Resmi</span>
+                        </button>
+                    </div>
+                </nav>
+
+                <div class="p-3 bg-gidi-darkblue text-[11px] text-gray-300 text-center border-t border-blue-800">
+                    Sistem Database Daerah Tiga &copy; 2026
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT AREA -->
+            <main class="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50">
+
+                <!-- 1. DASHBOARD VIEW -->
+                <div id="view-dashboard" class="view-content space-y-6">
+                    <!-- Top Title Card -->
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <img src="https://i.ibb.co.com/j9KYKHft/images.jpg" alt="Logo GIDI" class="w-16 h-16 object-contain rounded-full border-2 border-gidi-gold p-1 shadow" onerror="this.onerror=null; this.src='https://placehold.co/80x80/0F4C81/FFFFFF?text=GIDI';">
+                            <div>
+                                <span class="bg-blue-100 text-gidi-blue text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Sistem Resmi Database</span>
+                                <h2 class="text-xl font-bold text-gray-800 mt-1">GIDI DAERAH TIGA KOMBOSEHON</h2>
+                                <p class="text-xs text-gray-500">Klasis Koma Wilayah Bogo Pelindung Yesus Kristus</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 w-full md:w-auto justify-end">
+                            <button onclick="triggerPrintReport()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 shadow">
+                                <i class="fas fa-print"></i> Cetak Ringkasan Daerah
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 uppercase">Total Penduduk Daerah</p>
+                                <h3 id="stat-total-penduduk" class="text-2xl font-extrabold text-gray-800 mt-1">0</h3>
+                                <p class="text-[11px] text-emerald-600 mt-1 font-semibold"><i class="fas fa-users mr-1"></i>5 Jemaat Terdaftar</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 text-gidi-blue rounded-xl flex items-center justify-center text-xl">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 uppercase">Sudah Baptis</p>
+                                <h3 id="stat-total-baptis" class="text-2xl font-extrabold text-blue-600 mt-1">0</h3>
+                                <p id="stat-baptis-pct" class="text-[11px] text-gray-500 mt-1">0% dari total jiwa</p>
+                            </div>
+                            <div class="w-12 h-12 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fas fa-water"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 uppercase">Belum Baptis</p>
+                                <h3 id="stat-total-belumbaptis" class="text-2xl font-extrabold text-amber-600 mt-1">0</h3>
+                                <p id="stat-belumbaptis-pct" class="text-[11px] text-gray-500 mt-1">0% dari total jiwa</p>
+                            </div>
+                            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fas fa-user-clock"></i>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                            <div>
+                                <p class="text-xs font-medium text-gray-500 uppercase">Hamba-Hamba Tuhan</p>
+                                <h3 id="stat-total-hamba" class="text-2xl font-extrabold text-emerald-600 mt-1">0</h3>
+                                <p class="text-[11px] text-gray-500 mt-1">Pelayan di 5 Jemaat</p>
+                            </div>
+                            <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown per Jemaat Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                            <h3 class="font-bold text-gray-800 text-sm flex items-center gap-2">
+                                <i class="fas fa-table text-gidi-blue"></i> Rekapitulasi Data Masing-Masing Jemaat
+                            </h3>
+                            <span class="text-xs text-gray-500">Klasis Koma Wilayah Bogo</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-gray-700 uppercase font-bold border-b border-gray-200">
+                                        <th class="p-3">Nama Jemaat</th>
+                                        <th class="p-3 text-center">Jumlah Penduduk</th>
+                                        <th class="p-3 text-center">Sudah Baptis</th>
+                                        <th class="p-3 text-center">Belum Baptis</th>
+                                        <th class="p-3 text-center">Perjamuan Aktif</th>
+                                        <th class="p-3 text-center">Hamba Tuhan</th>
+                                        <th class="p-3 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-jemaat-tbody" class="divide-y divide-gray-100">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Visual Financial Overview Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
+                                <i class="fas fa-chart-bar text-gidi-blue"></i> Statistik Populasi Per Jemaat
+                            </h3>
+                            <div class="h-64 relative">
+                                <canvas id="chart-populasi"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-800 text-sm mb-4 flex items-center gap-2">
+                                <i class="fas fa-coins text-emerald-600"></i> Ringkasan Keuangan & Alokasi Kas
+                            </h3>
+                            <div class="h-64 relative">
+                                <canvas id="chart-keuangan-dashboard"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. JEMAAT MANAGEMENT VIEW -->
+                <div id="view-jemaat" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-blue-100 text-gidi-blue text-xs font-bold px-2.5 py-0.5 rounded-full uppercase">Manajemen Data Jemaat</span>
+                                <span id="jemaat-status-badge" class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full">Aktif</span>
+                            </div>
+                            <h2 id="jemaat-title" class="text-2xl font-extrabold text-gray-800 mt-1">Jemaat Berea Kobakma 1</h2>
+                            <p class="text-xs text-gray-500">Pendataan Jiwa / Penduduk (Input nama langsung per anggota jiwa)</p>
+                        </div>
+                        <button onclick="openModalAnggota()" class="bg-gidi-blue hover:bg-gidi-darkblue text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow transition">
+                            <i class="fas fa-user-plus"></i> Tambah Nama Penduduk Baru
+                        </button>
+                    </div>
+
+                    <!-- Mini Stat Cards for Jemaat -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <span class="text-xs text-gray-500 font-medium">Total Penduduk</span>
+                            <p id="jemaat-stat-total" class="text-xl font-bold text-gray-800 mt-1">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <span class="text-xs text-gray-500 font-medium">Sudah Baptis</span>
+                            <p id="jemaat-stat-baptis" class="text-xl font-bold text-blue-600 mt-1">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <span class="text-xs text-gray-500 font-medium">Belum Baptis</span>
+                            <p id="jemaat-stat-belumbaptis" class="text-xl font-bold text-amber-600 mt-1">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                            <span class="text-xs text-gray-500 font-medium">Perjamuan Kudus Aktif</span>
+                            <p id="jemaat-stat-perjamuan" class="text-xl font-bold text-purple-600 mt-1">0 Jiwa</p>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filters -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-3 items-center justify-between">
+                        <div class="relative w-full md:w-72">
+                            <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-xs"></i>
+                            <input type="text" id="jemaat-search" oninput="renderJemaatTable()" placeholder="Cari nama penduduk..." class="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-gidi-blue">
+                        </div>
+                        <div class="flex flex-wrap gap-2 w-full md:w-auto">
+                            <select id="jemaat-filter-baptis" onchange="renderJemaatTable()" class="border border-gray-200 rounded-lg text-xs p-2 focus:outline-none focus:ring-2 focus:ring-gidi-blue">
+                                <option value="ALL">Semua Status Baptis</option>
+                                <option value="Sudah Baptis">Sudah Baptis</option>
+                                <option value="Belum Baptis">Belum Baptis</option>
+                            </select>
+                            <select id="jemaat-filter-status" onchange="renderJemaatTable()" class="border border-gray-200 rounded-lg text-xs p-2 focus:outline-none focus:ring-2 focus:ring-gidi-blue">
+                                <option value="ALL">Semua Status Keaktifan</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Tidak Aktif">Tidak Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Jemaat Members Data Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-gray-700 uppercase font-bold border-b border-gray-200">
+                                        <th class="p-3 w-12 text-center">No</th>
+                                        <th class="p-3">Nama Lengkap Anggota</th>
+                                        <th class="p-3">Status Baptis</th>
+                                        <th class="p-3">Perjamuan Kudus</th>
+                                        <th class="p-3">Pendidikan</th>
+                                        <th class="p-3 text-center">Status Keaktifan</th>
+                                        <th class="p-3 text-center">Aksi Edit / Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="jemaat-tbody" class="divide-y divide-gray-100">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. DATA BAPTIS VIEW -->
+                <div id="view-data-baptis" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100">
+                        <h2 class="text-xl font-bold text-gray-800">Rekapitulasi Status Baptis Jiwa</h2>
+                        <p class="text-xs text-gray-500">Filter dan kelola seluruh jiwa yang Sudah Baptis & Belum Baptis di 5 Jemaat Daerah Tiga Kombosehon</p>
+                    </div>
+
+                    <div class="flex border-b border-gray-200 bg-white rounded-t-xl px-4 pt-2">
+                        <button onclick="switchBaptisTab('sudah')" id="tab-baptis-sudah" class="py-2.5 px-4 font-bold text-xs border-b-2 border-gidi-blue text-gidi-blue flex items-center gap-2">
+                            <i class="fas fa-check-circle text-emerald-500"></i> Data Sudah Baptis
+                        </button>
+                        <button onclick="switchBaptisTab('belum')" id="tab-baptis-belum" class="py-2.5 px-4 font-bold text-xs border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center gap-2">
+                            <i class="fas fa-clock text-amber-500"></i> Data Belum Baptis
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-b-xl shadow-sm border border-gray-100 p-4 overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100 text-gray-700 uppercase font-bold border-b border-gray-200">
+                                    <th class="p-3 w-12 text-center">No</th>
+                                    <th class="p-3">Nama Anggota Jiwa</th>
+                                    <th class="p-3">Asal Jemaat</th>
+                                    <th class="p-3">Perjamuan Kudus</th>
+                                    <th class="p-3">Keaktifan</th>
+                                    <th class="p-3 text-center">Aksi Edit/Hapus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="baptis-tbody" class="divide-y divide-gray-100">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. PENDIDIKAN VIEW -->
+                <div id="view-pendidikan" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Pendataan Tingkat Pendidikan & Sekolah Alkitab</h2>
+                            <p class="text-xs text-gray-500">Klasifikasi pendidikan Sekolah Alkitab, SD, SMP, SMA/SMK, Sarjana, & Guru Sekolah Minggu</p>
+                        </div>
+                    </div>
+
+                    <!-- Education Categories Overview -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <i class="fas fa-bible text-purple-600 text-xl mb-1"></i>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">Sekolah Alkitab</p>
+                            <p id="edu-count-sa" class="text-lg font-black text-gray-800">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <i class="fas fa-school text-blue-500 text-xl mb-1"></i>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">Tingkat SD</p>
+                            <p id="edu-count-sd" class="text-lg font-black text-gray-800">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <i class="fas fa-book-reader text-teal-500 text-xl mb-1"></i>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">Tingkat SMP</p>
+                            <p id="edu-count-smp" class="text-lg font-black text-gray-800">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <i class="fas fa-user-graduate text-indigo-500 text-xl mb-1"></i>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">Tingkat SMA/SMK</p>
+                            <p id="edu-count-sma" class="text-lg font-black text-gray-800">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <i class="fas fa-graduation-cap text-emerald-600 text-xl mb-1"></i>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">Sarjana (S1/S2)</p>
+                            <p id="edu-count-sarjana" class="text-lg font-black text-gray-800">0 Jiwa</p>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl shadow-sm border border-gray-100 text-center">
+                            <i class="fas fa-child text-amber-500 text-xl mb-1"></i>
+                            <p class="text-[10px] font-bold text-gray-500 uppercase">Guru Sek. Minggu</p>
+                            <p id="edu-count-gsm" class="text-lg font-black text-gray-800">0 Jiwa</p>
+                        </div>
+                    </div>
+
+                    <!-- Education Data Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-sm text-gray-800">Daftar Anggota Menurut Jenjang Pendidikan</h3>
+                            <select id="edu-filter-type" onchange="renderEducationTable()" class="border border-gray-200 rounded-lg text-xs p-2 focus:outline-none focus:ring-2 focus:ring-gidi-blue">
+                                <option value="ALL">Semua Tingkat Pendidikan</option>
+                                <option value="Sekolah Alkitab">Sekolah Alkitab</option>
+                                <option value="SD">SD</option>
+                                <option value="SMP">SMP</option>
+                                <option value="SMA">SMA/SMK</option>
+                                <option value="Sarjana">Sarjana</option>
+                                <option value="Guru Sekolah Minggu">Guru Sekolah Minggu</option>
+                            </select>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-gray-700 uppercase font-bold border-b border-gray-200">
+                                        <th class="p-3 w-12 text-center">No</th>
+                                        <th class="p-3">Nama Anggota</th>
+                                        <th class="p-3">Asal Jemaat</th>
+                                        <th class="p-3">Jenjang Pendidikan</th>
+                                        <th class="p-3 text-center">Aksi Edit/Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="edu-tbody" class="divide-y divide-gray-100">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. HAMBA HAMBA TUHAN VIEW -->
+                <div id="view-hamba-tuhan" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Data Hamba-Hamba Tuhan / Pelayan</h2>
+                            <p class="text-xs text-gray-500">Pendataan Gembala, Evangelis, Diakon, dan Pelayan di 5 Jemaat Daerah Tiga Kombosehon</p>
+                        </div>
+                        <button onclick="openModalHamba()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow transition">
+                            <i class="fas fa-plus-circle"></i> Tambah Hamba Tuhan Baru
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-gray-700 uppercase font-bold border-b border-gray-200">
+                                        <th class="p-3 w-12 text-center">No</th>
+                                        <th class="p-3">Nama Hamba Tuhan & Gelar</th>
+                                        <th class="p-3">Jabatan / Pelayanan</th>
+                                        <th class="p-3">Penugasan Jemaat</th>
+                                        <th class="p-3">Keterangan / Laporan Tugas</th>
+                                        <th class="p-3 text-center">Aksi Edit/Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hamba-tbody" class="divide-y divide-gray-100">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. PROGRAM KERJA & PEMBANGUNAN VIEW -->
+                <div id="view-pembangunan" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Program Kerja & Pembangunan Gereja</h2>
+                            <p class="text-xs text-gray-500">Dokumentasi Laporan Pembangunan & Program Kerja beserta Foto Kegiatan</p>
+                        </div>
+                        <button onclick="openModalPembangunan()" class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow transition">
+                            <i class="fas fa-hammer"></i> Tambah Laporan Pembangunan / Foto
+                        </button>
+                    </div>
+
+                    <!-- Pembangunan Cards Grid -->
+                    <div id="pembangunan-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic photo cards -->
+                    </div>
+                </div>
+
+                <!-- 7. ASET & INVENTARIS VIEW -->
+                <div id="view-aset" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Aset & Inventaris Gereja</h2>
+                            <p class="text-xs text-gray-500">Pendataan fisik aset gereja, tanah, gedung, peralatan sound, dan kendaraan di 5 jemaat</p>
+                        </div>
+                        <button onclick="openModalAset()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow transition">
+                            <i class="fas fa-plus"></i> Tambah Aset Gereja
+                        </button>
+                    </div>
+
+                    <div id="aset-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Dynamic asset cards -->
+                    </div>
+                </div>
+
+                <!-- 8. KEUANGAN VIEW -->
+                <div id="view-keuangan" class="view-content hidden space-y-6">
+                    <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Sistem Keuangan & Alokasi Kas</h2>
+                            <p class="text-xs text-gray-500">Kelola Keuangan Jemaat, Alokasi dari Jemaat ke Daerah, serta Daerah Keluar ke Klasis, Wilayah, & BPP Pusat</p>
+                        </div>
+                        <button onclick="openModalKeuangan()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow transition">
+                            <i class="fas fa-plus-circle"></i> Catat Transaksi Keuangan
+                        </button>
+                    </div>
+
+                    <!-- Flow Diagram Card -->
+                    <div class="bg-gradient-to-r from-gidi-darkblue to-gidi-blue text-white p-5 rounded-xl shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div class="text-center md:text-left">
+                            <span class="text-gidi-gold text-xs font-bold uppercase tracking-wider">Alur Kas Keuangan Hierarki</span>
+                            <h3 class="text-lg font-extrabold mt-1">Jemaat &rarr; Daerah Tiga &rarr; Klasis / Wilayah / BPP Pusat</h3>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="bg-white/10 px-3 py-1 rounded-lg text-xs">Total Setoran Ke Daerah: <strong id="sum-ke-daerah" class="text-gidi-gold">Rp 0</strong></span>
+                            <span class="bg-white/10 px-3 py-1 rounded-lg text-xs">Total Setoran Ke Pusat: <strong id="sum-ke-pusat" class="text-emerald-300">Rp 0</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Financial Charts -->
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-sm text-gray-800 mb-3">Grafik Alokasi Setoran Keuangan</h3>
+                        <div class="h-64 relative">
+                            <canvas id="chart-keuangan-detail"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Financial Transactions Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 bg-gray-50 border-b border-gray-100 font-bold text-xs text-gray-700">
+                            Riwayat Transaksi Keuangan & Setoran Kas
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-100 text-gray-700 uppercase font-bold border-b border-gray-200">
+                                        <th class="p-3">Tanggal</th>
+                                        <th class="p-3">Kategori Transaksi</th>
+                                        <th class="p-3">Asal / Tujuan Jemaat</th>
+                                        <th class="p-3">Nominal (Rp)</th>
+                                        <th class="p-3">Keterangan</th>
+                                        <th class="p-3 text-center">Aksi Edit/Hapus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="keuangan-tbody" class="divide-y divide-gray-100">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL ANGGOTA PENDUDUK (ADD/EDIT) -->
+    <div id="modal-anggota" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-gray-100">
+            <div class="bg-gidi-blue p-4 text-white flex justify-between items-center">
+                <h3 id="modal-anggota-title" class="font-bold text-sm">Tambah Nama Penduduk Baru</h3>
+                <button onclick="closeModal('modal-anggota')" class="text-white hover:text-gidi-gold"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-anggota" onsubmit="saveAnggota(event)" class="p-5 space-y-3">
+                <input type="hidden" id="anggota-id">
+                
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Pilih Jemaat</label>
+                    <select id="anggota-jemaat" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-gidi-blue" required>
+                        <option value="Berea Kobakma 1">Berea Kobakma 1</option>
+                        <option value="Roma Namuragas">Roma Namuragas</option>
+                        <option value="Imanuel 1 Boroges">Imanuel 1 Boroges</option>
+                        <option value="Imanuel 2 Seralema">Imanuel 2 Seralema</option>
+                        <option value="Anugerah Homasam">Anugerah Homasam</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nama Lengkap Penduduk (Jiwa)</label>
+                    <input type="text" id="anggota-nama" required placeholder="Contoh: Yonas Endambia" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-gidi-blue">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Status Baptis</label>
+                        <select id="anggota-baptis" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-gidi-blue">
+                            <option value="Sudah Baptis">Sudah Baptis</option>
+                            <option value="Belum Baptis">Belum Baptis</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Perjamuan Kudus</label>
+                        <select id="anggota-perjamuan" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-gidi-blue">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Pendidikan</label>
+                        <select id="anggota-pendidikan" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-gidi-blue">
+                            <option value="SD">SD</option>
+                            <option value="SMP">SMP</option>
+                            <option value="SMA">SMA/SMK</option>
+                            <option value="Sarjana">Sarjana (S1/S2)</option>
+                            <option value="Sekolah Alkitab">Sekolah Alkitab</option>
+                            <option value="Guru Sekolah Minggu">Guru Sekolah Minggu</option>
+                            <option value="-">Lainnya / Tidak Sekolah</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Status Keaktifan</label>
+                        <select id="anggota-status" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-gidi-blue">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Tidak Aktif">Tidak Aktif</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-3 flex gap-2 justify-end">
+                    <button type="button" onclick="closeModal('modal-anggota')" class="px-4 py-2 border border-gray-300 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-gidi-blue hover:bg-gidi-darkblue text-white rounded-lg text-xs font-bold shadow">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL HAMBA TUHAN (ADD/EDIT) -->
+    <div id="modal-hamba" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-gray-100">
+            <div class="bg-emerald-700 p-4 text-white flex justify-between items-center">
+                <h3 id="modal-hamba-title" class="font-bold text-sm">Tambah Hamba Tuhan</h3>
+                <button onclick="closeModal('modal-hamba')" class="text-white hover:text-gidi-gold"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-hamba" onsubmit="saveHamba(event)" class="p-5 space-y-3">
+                <input type="hidden" id="hamba-id">
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nama Hamba Tuhan & Gelar</label>
+                    <input type="text" id="hamba-nama" required placeholder="Contoh: Pdt. Yapan Endambia, S.Th" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Jabatan Pelayanan</label>
+                        <input type="text" id="hamba-jabatan" required placeholder="Gembala / Evangelis / Diakon" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Penugasan Jemaat</label>
+                        <select id="hamba-jemaat" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-600">
+                            <option value="Berea Kobakma 1">Berea Kobakma 1</option>
+                            <option value="Roma Namuragas">Roma Namuragas</option>
+                            <option value="Imanuel 1 Boroges">Imanuel 1 Boroges</option>
+                            <option value="Imanuel 2 Seralema">Imanuel 2 Seralema</option>
+                            <option value="Anugerah Homasam">Anugerah Homasam</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Keterangan Laporan Tugas</label>
+                    <textarea id="hamba-keterangan" rows="3" placeholder="Keterangan tugas atau masa pelayanan..." class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-emerald-600"></textarea>
+                </div>
+
+                <div class="pt-3 flex gap-2 justify-end">
+                    <button type="button" onclick="closeModal('modal-hamba')" class="px-4 py-2 border border-gray-300 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow">Simpan Hamba Tuhan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PEMBANGUNAN & FOTO -->
+    <div id="modal-pembangunan" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-gray-100">
+            <div class="bg-orange-600 p-4 text-white flex justify-between items-center">
+                <h3 id="modal-pembangunan-title" class="font-bold text-sm">Tambah Laporan Pembangunan</h3>
+                <button onclick="closeModal('modal-pembangunan')" class="text-white hover:text-gidi-gold"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-pembangunan" onsubmit="savePembangunan(event)" class="p-5 space-y-3">
+                <input type="hidden" id="pembangunan-id">
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Judul Program / Pembangunan</label>
+                    <input type="text" id="pembangunan-judul" required placeholder="Contoh: Pembangunan Pastori Jemaat" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-orange-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Lokasi Jemaat</label>
+                        <select id="pembangunan-jemaat" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-orange-600">
+                            <option value="Berea Kobakma 1">Berea Kobakma 1</option>
+                            <option value="Roma Namuragas">Roma Namuragas</option>
+                            <option value="Imanuel 1 Boroges">Imanuel 1 Boroges</option>
+                            <option value="Imanuel 2 Seralema">Imanuel 2 Seralema</option>
+                            <option value="Anugerah Homasam">Anugerah Homasam</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Status Progres</label>
+                        <select id="pembangunan-status" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-orange-600">
+                            <option value="Dalam Perencanaan">Dalam Perencanaan</option>
+                            <option value="Proses Pembangunan">Proses Pembangunan</option>
+                            <option value="Selesai 100%">Selesai 100%</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">URL / Link Foto Kegiatan Pembangunan</label>
+                    <input type="url" id="pembangunan-foto" placeholder="https://..." class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-orange-600">
+                    <p class="text-[10px] text-gray-400 mt-1">*Jika dikosongkan, gambar placeholder standar akan digunakan.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Deskripsi / Keterangan Laporan</label>
+                    <textarea id="pembangunan-keterangan" rows="3" placeholder="Rincian progress fisik dan dana..." class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-orange-600"></textarea>
+                </div>
+
+                <div class="pt-3 flex gap-2 justify-end">
+                    <button type="button" onclick="closeModal('modal-pembangunan')" class="px-4 py-2 border border-gray-300 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-bold shadow">Simpan Laporan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ASET GEREJA -->
+    <div id="modal-aset" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-gray-100">
+            <div class="bg-purple-700 p-4 text-white flex justify-between items-center">
+                <h3 id="modal-aset-title" class="font-bold text-sm">Tambah Aset Gereja</h3>
+                <button onclick="closeModal('modal-aset')" class="text-white hover:text-gidi-gold"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-aset" onsubmit="saveAset(event)" class="p-5 space-y-3">
+                <input type="hidden" id="aset-id">
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nama Barang / Aset Inventaris</label>
+                    <input type="text" id="aset-nama" required placeholder="Contoh: Sound System Yamaha & Genset" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-purple-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Jemaat Pemilik</label>
+                        <select id="aset-jemaat" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-purple-600">
+                            <option value="Berea Kobakma 1">Berea Kobakma 1</option>
+                            <option value="Roma Namuragas">Roma Namuragas</option>
+                            <option value="Imanuel 1 Boroges">Imanuel 1 Boroges</option>
+                            <option value="Imanuel 2 Seralema">Imanuel 2 Seralema</option>
+                            <option value="Anugerah Homasam">Anugerah Homasam</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Kondisi Aset</label>
+                        <select id="aset-kondisi" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-purple-600">
+                            <option value="Sangat Baik">Sangat Baik</option>
+                            <option value="Baik">Baik</option>
+                            <option value="Perlu Perbaikan">Perlu Perbaikan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">URL / Link Foto Aset</label>
+                    <input type="url" id="aset-foto" placeholder="https://..." class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-purple-600">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Keterangan / Jumlah Unit</label>
+                    <textarea id="aset-keterangan" rows="2" placeholder="Unit: 2 set, Lokasi penyimpanan di Gedung Gereja..." class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-purple-600"></textarea>
+                </div>
+
+                <div class="pt-3 flex gap-2 justify-end">
+                    <button type="button" onclick="closeModal('modal-aset')" class="px-4 py-2 border border-gray-300 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow">Simpan Aset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL KEUANGAN -->
+    <div id="modal-keuangan" class="hidden fixed inset-0 z-50 modal-bg flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden border border-gray-100">
+            <div class="bg-green-700 p-4 text-white flex justify-between items-center">
+                <h3 id="modal-keuangan-title" class="font-bold text-sm">Catat Transaksi Keuangan</h3>
+                <button onclick="closeModal('modal-keuangan')" class="text-white hover:text-gidi-gold"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-keuangan" onsubmit="saveKeuangan(event)" class="p-5 space-y-3">
+                <input type="hidden" id="keuangan-id">
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Kategori Transaksi Keuangan</label>
+                    <select id="keuangan-kategori" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-green-600" required>
+                        <option value="Kas Masuk Jemaat">Kas Masuk Jemaat</option>
+                        <option value="Pengeluaran Jemaat">Pengeluaran Jemaat</option>
+                        <option value="Setoran Dari Jemaat Ke Daerah">Setoran Dari Jemaat Ke Daerah</option>
+                        <option value="Setoran Daerah Ke Klasis">Setoran Daerah Ke Klasis</option>
+                        <option value="Setoran Daerah Ke Wilayah">Setoran Daerah Ke Wilayah</option>
+                        <option value="Setoran Daerah Ke BPP Pusat">Setoran Daerah Ke BPP Pusat</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Asal / Terkait Jemaat</label>
+                        <select id="keuangan-jemaat" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-green-600">
+                            <option value="Berea Kobakma 1">Berea Kobakma 1</option>
+                            <option value="Roma Namuragas">Roma Namuragas</option>
+                            <option value="Imanuel 1 Boroges">Imanuel 1 Boroges</option>
+                            <option value="Imanuel 2 Seralema">Imanuel 2 Seralema</option>
+                            <option value="Anugerah Homasam">Anugerah Homasam</option>
+                            <option value="Kas Umum Daerah Tiga">Kas Umum Daerah Tiga</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nominal (Rp)</label>
+                        <input type="number" id="keuangan-nominal" min="0" required placeholder="500000" class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-green-600">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Tanggal Transaksi</label>
+                    <input type="date" id="keuangan-tanggal" required class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-green-600">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Keterangan / Laporan Transaksi</label>
+                    <textarea id="keuangan-keterangan" rows="2" placeholder="Pundi mingguan / persembahan syukur / iuran daerah..." class="w-full border border-gray-300 rounded-lg p-2.5 text-xs focus:ring-2 focus:ring-green-600"></textarea>
+                </div>
+
+                <div class="pt-3 flex gap-2 justify-end">
+                    <button type="button" onclick="closeModal('modal-keuangan')" class="px-4 py-2 border border-gray-300 rounded-lg text-xs font-bold text-gray-600 hover:bg-gray-100">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold shadow">Simpan Keuangan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- OFFICIAL PRINT LAYOUT TEMPLATE -->
+    <div id="print-area" class="print-only print-container p-6 bg-white text-black font-sans">
+        <!-- Official Letterhead Header -->
+        <div class="flex items-center justify-between border-b-4 border-black pb-3 mb-4">
+            <div class="w-20 h-20 flex-shrink-0">
+                <img src="https://i.ibb.co.com/j9KYKHft/images.jpg" alt="Logo GIDI" class="w-full h-full object-contain" onerror="this.onerror=null; this.src='https://placehold.co/80x80/0F4C81/FFFFFF?text=GIDI';">
+            </div>
+            <div class="text-center flex-1 px-4">
+                <h1 class="text-lg font-black uppercase tracking-wider">GEREJA INJILI DI INDONESIA (GIDI)</h1>
+                <h2 class="text-sm font-bold uppercase">KLASIS KOMA WILAYAH BOGO</h2>
+                <h3 class="text-xs font-extrabold uppercase text-gray-800">PELINDUNG YESUS KRISTUS - DAERAH TIGA KOMBOSEHON</h3>
+                <p class="text-[10px] italic mt-1">Laporan Resmi Sistem Database & Rekapitulasi Data Keumatan</p>
+            </div>
+            <div class="w-20 text-right text-[10px]">
+                <span>Tgl Cetak:</span>
+                <div id="print-date" class="font-bold">05 Okt 2026</div>
+            </div>
+        </div>
+
+        <div class="text-center mb-6">
+            <u class="text-sm font-bold uppercase">LAPORAN REKAPITULASI DATA DAERAH TIGA KOMBOSEHON</u>
+        </div>
+
+        <!-- Print Summary Tables -->
+        <div class="mb-6">
+            <h4 class="font-bold text-xs uppercase mb-2">1. Rekapitulasi Penduduk & Keumatan 5 Jemaat</h4>
+            <table class="w-full text-xs border-collapse border border-black text-left">
+                <thead>
+                    <tr class="bg-gray-200 border-b border-black">
+                        <th class="border border-black p-1.5">Nama Jemaat</th>
+                        <th class="border border-black p-1.5 text-center">Total Penduduk</th>
+                        <th class="border border-black p-1.5 text-center">Sudah Baptis</th>
+                        <th class="border border-black p-1.5 text-center">Belum Baptis</th>
+                        <th class="border border-black p-1.5 text-center">Perjamuan Aktif</th>
+                    </tr>
+                </thead>
+                <tbody id="print-tbody-jemaat">
+                    <!-- Populated for print -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mb-6">
+            <h4 class="font-bold text-xs uppercase mb-2">2. Rekapitulasi Pendidikan & Sekolah Alkitab</h4>
+            <div id="print-education-summary" class="text-xs grid grid-cols-3 gap-2 border border-black p-3">
+                <!-- Populated for print -->
+            </div>
+        </div>
+
+        <div class="mb-6">
+            <h4 class="font-bold text-xs uppercase mb-2">3. Rekapitulasi Keuangan & Setoran Kas</h4>
+            <div id="print-financial-summary" class="text-xs border border-black p-3 space-y-1">
+                <!-- Populated for print -->
+            </div>
+        </div>
+
+        <!-- Official Signatures Block -->
+        <div class="mt-12 flex justify-between text-xs text-center font-bold">
+            <div class="w-1/2">
+                <p>Mengetahui,</p>
+                <p class="mb-16">Gembala Daerah Tiga Kombosehon</p>
+                <p class="underline text-sm font-extrabold">Pdt. Yapan Endambia, S.Th</p>
+            </div>
+            <div class="w-1/2">
+                <p>Dilaporkan Oleh,</p>
+                <p class="mb-16">Sekretaris Daerah Tiga Kombosehon</p>
+                <p class="underline text-sm font-extrabold">Aprinus Pugumis, S.Pd</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const JEMAAT_LIST = [
+            "Berea Kobakma 1",
+            "Roma Namuragas",
+            "Imanuel 1 Boroges",
+            "Imanuel 2 Seralema",
+            "Anugerah Homasam"
+        ];
+
+        // Default Initial Datasets if LocalStorage is empty
+        const DEFAULT_ANGGOTA = [
+            { id: "1", jemaat: "Berea Kobakma 1", nama: "Yonas Endambia", baptis: "Sudah Baptis", perjamuan: "Aktif", pendidikan: "Sarjana", status: "Aktif" },
+            { id: "2", jemaat: "Berea Kobakma 1", nama: "Markus Pugumis", baptis: "Sudah Baptis", perjamuan: "Aktif", pendidikan: "SMA", status: "Aktif" },
+            { id: "3", jemaat: "Roma Namuragas", nama: "Marius Towolom", baptis: "Belum Baptis", perjamuan: "Tidak Aktif", pendidikan: "SD", status: "Aktif" },
+            { id: "4", jemaat: "Imanuel 1 Boroges", nama: "Ester Yikwa", baptis: "Sudah Baptis", perjamuan: "Aktif", pendidikan: "Sekolah Alkitab", status: "Aktif" },
+            { id: "5", jemaat: "Imanuel 2 Seralema", nama: "Lukas Endambia", baptis: "Sudah Baptis", perjamuan: "Aktif", pendidikan: "Guru Sekolah Minggu", status: "Aktif" },
+            { id: "6", jemaat: "Anugerah Homasam", nama: "Samuel Sokoy", baptis: "Belum Baptis", perjamuan: "Tidak Aktif", pendidikan: "SMP", status: "Aktif" }
+        ];
+
+        const DEFAULT_HAMBA = [
+            { id: "h1", nama: "Pdt. Yapan Endambia, S.Th", jabatan: "Gembala Daerah Tiga", jemaat: "Berea Kobakma 1", keterangan: "Pelayanan Aktif Daerah Kombosehon" },
+            { id: "h2", nama: "Aprinus Pugumis, S.Pd", jabatan: "Sekretaris Daerah", jemaat: "Roma Namuragas", keterangan: "Administrasi & Pelayanan Jemaat" },
+            { id: "h3", nama: "Ev. Barnabas Yikwa", jabatan: "Evangelis", jemaat: "Imanuel 1 Boroges", keterangan: "Penginjilan Lapangan" }
+        ];
+
+        const DEFAULT_PEMBANGUNAN = [
+            { id: "p1", judul: "Pembangunan Gedung Gereja Berea", jemaat: "Berea Kobakma 1", status: "Proses Pembangunan", foto: "https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=500&q=80", keterangan: "Tahap pengerjaan atap dan dinding kayu" },
+            { id: "p2", judul: "Renovasi Pastori Jemaat Imanuel", jemaat: "Imanuel 1 Boroges", status: "Selesai 100%", foto: "https://images.unsplash.com/photo-1510519138161-58446231f11c?w=500&q=80", keterangan: "Sudah ditempati oleh pelayanan gembala" }
+        ];
+
+        const DEFAULT_ASET = [
+            { id: "a1", nama: "Gedung Gereja Utama", jemaat: "Berea Kobakma 1", kondisi: "Sangat Baik", foto: "https://images.unsplash.com/photo-1548625149-fc4a29cf7092?w=500&q=80", keterangan: "Bangunan permanen ukuran 12x20 meter" },
+            { id: "a2", nama: "Sound System & Generator 5000W", jemaat: "Roma Namuragas", kondisi: "Baik", foto: "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=500&q=80", keterangan: "Lengkap dengan 4 speaker aktif" }
+        ];
+
+        const DEFAULT_KEUANGAN = [
+            { id: "k1", kategori: "Setoran Dari Jemaat Ke Daerah", jemaat: "Berea Kobakma 1", nominal: 1500000, tanggal: "2026-09-10", keterangan: "Iuran rutin bulanan jemaat" },
+            { id: "k2", kategori: "Setoran Daerah Ke Klasis", jemaat: "Kas Umum Daerah Tiga", nominal: 2000000, tanggal: "2026-09-15", keterangan: "Kewajiban kas ke Klasis Koma" }
+        ];
+
+        // State Data Holders
+        let dbAnggota = JSON.parse(localStorage.getItem("gidi_anggota")) || DEFAULT_ANGGOTA;
+        let dbHamba = JSON.parse(localStorage.getItem("gidi_hamba")) || DEFAULT_HAMBA;
+        let dbPembangunan = JSON.parse(localStorage.getItem("gidi_pembangunan")) || DEFAULT_PEMBANGUNAN;
+        let dbAset = JSON.parse(localStorage.getItem("gidi_aset")) || DEFAULT_ASET;
+        let dbKeuangan = JSON.parse(localStorage.getItem("gidi_keuangan")) || DEFAULT_KEUANGAN;
+
+        let activeJemaat = "Berea Kobakma 1";
+        let activeBaptisTab = "sudah";
+        let chartPopulasiInstance = null;
+        let chartKeuanganDashInstance = null;
+        let chartKeuanganDetailInstance = null;
+
+        function saveAllState() {
+            localStorage.setItem("gidi_anggota", JSON.stringify(dbAnggota));
+            localStorage.setItem("gidi_hamba", JSON.stringify(dbHamba));
+            localStorage.setItem("gidi_pembangunan", JSON.stringify(dbPembangunan));
+            localStorage.setItem("gidi_aset", JSON.stringify(dbAset));
+            localStorage.setItem("gidi_keuangan", JSON.stringify(dbKeuangan));
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            const toast = document.createElement("div");
+            const bgClass = type === "success" ? "bg-emerald-600" : "bg-red-600";
+            toast.className = `${bgClass} text-white text-xs font-bold px-4 py-3 rounded-lg shadow-xl flex items-center gap-2 transition-all duration-300 transform translate-y-2`;
+            toast.innerHTML = `<i class="fas ${type === "success" ? "fa-check-circle" : "fa-exclamation-circle"}"></i> ${message}`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add("opacity-0", "translate-y-0");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            sidebar.classList.toggle("-translate-x-full");
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById("login-username").value.trim();
+            const p = document.getElementById("login-password").value.trim();
+            const err = document.getElementById("login-error");
+
+            if (u === "admin" && p === "daerah") {
+                err.classList.add("hidden");
+                document.getElementById("login-screen").classList.add("hidden");
+                document.getElementById("main-app").classList.remove("hidden");
+                showToast("Selamat Datang Administrator GIDI Daerah Tiga Kombosehon");
+                renderDashboard();
+            } else {
+                err.classList.remove("hidden");
+            }
+        }
+
+        function handleLogout() {
+            document.getElementById("main-app").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
+            document.getElementById("login-username").value = "";
+            document.getElementById("login-password").value = "";
+            showToast("Berhasil keluar dari sistem.", "info");
+        }
+
+        function switchView(viewName) {
+            document.querySelectorAll(".view-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".sidebar-item").forEach(el => el.classList.remove("sidebar-item-active"));
+            
+            const targetView = document.getElementById(`view-${viewName}`);
+            if (targetView) targetView.classList.remove("hidden");
+
+            const activeNav = document.getElementById(`nav-${viewName}`);
+            if (activeNav) activeNav.classList.add("sidebar-item-active");
+
+            // Refresh view data
+            if (viewName === "dashboard") renderDashboard();
+            if (viewName === "data-baptis") renderBaptisTable();
+            if (viewName === "pendidikan") renderEducationTable();
+            if (viewName === "hamba-tuhan") renderHambaTable();
+            if (viewName === "pembangunan") renderPembangunanGrid();
+            if (viewName === "aset") renderAsetGrid();
+            if (viewName === "keuangan") renderKeuanganView();
+
+            if (window.innerWidth < 1024) {
+                document.getElementById("sidebar").classList.add("-translate-x-full");
+            }
+        }
+
+        function switchJemaat(jemaatName) {
+            activeJemaat = jemaatName;
+            document.querySelectorAll(".sidebar-jemaat-item").forEach(el => el.classList.remove("bg-blue-800", "font-bold"));
+            
+            // Highlight selected jemaat
+            if (jemaatName === "Berea Kobakma 1") document.getElementById("nav-jemaat-berea").classList.add("bg-blue-800", "font-bold");
+            if (jemaatName === "Roma Namuragas") document.getElementById("nav-jemaat-roma").classList.add("bg-blue-800", "font-bold");
+            if (jemaatName === "Imanuel 1 Boroges") document.getElementById("nav-jemaat-imanuel1").classList.add("bg-blue-800", "font-bold");
+            if (jemaatName === "Imanuel 2 Seralema") document.getElementById("nav-jemaat-imanuel2").classList.add("bg-blue-800", "font-bold");
+            if (jemaatName === "Anugerah Homasam") document.getElementById("nav-jemaat-anugerah").classList.add("bg-blue-800", "font-bold");
+
+            switchView("jemaat");
+            document.getElementById("jemaat-title").textContent = `Jemaat ${jemaatName}`;
+            renderJemaatTable();
+        }
+
+        function renderDashboard() {
+            const totalPenduduk = dbAnggota.length;
+            const totalBaptis = dbAnggota.filter(a => a.baptis === "Sudah Baptis").length;
+            const totalBelumBaptis = dbAnggota.filter(a => a.baptis === "Belum Baptis").length;
+            const totalHamba = dbHamba.length;
+
+            document.getElementById("stat-total-penduduk").textContent = `${totalPenduduk} Jiwa`;
+            document.getElementById("stat-total-baptis").textContent = `${totalBaptis} Jiwa`;
+            document.getElementById("stat-total-belumbaptis").textContent = `${totalBelumBaptis} Jiwa`;
+            document.getElementById("stat-total-hamba").textContent = `${totalHamba} Orang`;
+
+            const pctBaptis = totalPenduduk > 0 ? Math.round((totalBaptis / totalPenduduk) * 100) : 0;
+            const pctBelum = totalPenduduk > 0 ? Math.round((totalBelumBaptis / totalPenduduk) * 100) : 0;
+
+            document.getElementById("stat-baptis-pct").textContent = `${pctBaptis}% dari total jiwa`;
+            document.getElementById("stat-belumbaptis-pct").textContent = `${pctBelum}% dari total jiwa`;
+
+            // Populate Jemaat Summary Table
+            const tbody = document.getElementById("dashboard-jemaat-tbody");
+            tbody.innerHTML = "";
+
+            JEMAAT_LIST.forEach(jName => {
+                const listJ = dbAnggota.filter(a => a.jemaat === jName);
+                const pop = listJ.length;
+                const bSudah = listJ.filter(a => a.baptis === "Sudah Baptis").length;
+                const bBelum = listJ.filter(a => a.baptis === "Belum Baptis").length;
+                const perjamuan = listJ.filter(a => a.perjamuan === "Aktif").length;
+                const hamba = dbHamba.filter(h => h.jemaat === jName).length;
+
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-bold text-gray-800">${jName}</td>
+                    <td class="p-3 text-center font-bold text-blue-700">${pop} Jiwa</td>
+                    <td class="p-3 text-center"><span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold">${bSudah}</span></td>
+                    <td class="p-3 text-center"><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">${bBelum}</span></td>
+                    <td class="p-3 text-center"><span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full font-semibold">${perjamuan}</span></td>
+                    <td class="p-3 text-center font-semibold text-emerald-700">${hamba} Pelayan</td>
+                    <td class="p-3 text-center">
+                        <button onclick="switchJemaat('${jName}')" class="bg-gidi-blue text-white px-2.5 py-1 rounded text-[11px] font-bold hover:bg-gidi-darkblue">
+                            Kelola <i class="fas fa-arrow-right ml-1"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            renderCharts();
+        }
+
+        function renderCharts() {
+            // Chart 1: Population
+            const labels = JEMAAT_LIST.map(j => j.replace("Jemaat ", ""));
+            const popData = JEMAAT_LIST.map(j => dbAnggota.filter(a => a.jemaat === j).length);
+
+            const ctxPop = document.getElementById("chart-populasi").getContext("2d");
+            if (chartPopulasiInstance) chartPopulasiInstance.destroy();
+            chartPopulasiInstance = new Chart(ctxPop, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Jumlah Penduduk (Jiwa)',
+                        data: popData,
+                        backgroundColor: '#0F4C81',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+
+            // Chart 2: Keuangan Overview
+            const sumKeDaerah = dbKeuangan.filter(k => k.kategori === "Setoran Dari Jemaat Ke Daerah").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKeKlasis = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke Klasis").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKeWilayah = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke Wilayah").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKePusat = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke BPP Pusat").reduce((a, b) => a + Number(b.nominal), 0);
+
+            const ctxKeu = document.getElementById("chart-keuangan-dashboard").getContext("2d");
+            if (chartKeuanganDashInstance) chartKeuanganDashInstance.destroy();
+            chartKeuanganDashInstance = new Chart(ctxKeu, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Jemaat ke Daerah', 'Daerah ke Klasis', 'Daerah ke Wilayah', 'Daerah ke BPP Pusat'],
+                    datasets: [{
+                        data: [sumKeDaerah, sumKeKlasis, sumKeWilayah, sumKePusat],
+                        backgroundColor: ['#D4AF37', '#0F4C81', '#059669', '#7C3AED']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+                }
+            });
+        }
+
+        function renderJemaatTable() {
+            const tbody = document.getElementById("jemaat-tbody");
+            tbody.innerHTML = "";
+
+            const searchVal = document.getElementById("jemaat-search").value.toLowerCase();
+            const filterBaptis = document.getElementById("jemaat-filter-baptis").value;
+            const filterStatus = document.getElementById("jemaat-filter-status").value;
+
+            let filtered = dbAnggota.filter(a => a.jemaat === activeJemaat);
+
+            // Calculate stats for header
+            document.getElementById("jemaat-stat-total").textContent = `${filtered.length} Jiwa`;
+            document.getElementById("jemaat-stat-baptis").textContent = `${filtered.filter(a => a.baptis === "Sudah Baptis").length} Jiwa`;
+            document.getElementById("jemaat-stat-belumbaptis").textContent = `${filtered.filter(a => a.baptis === "Belum Baptis").length} Jiwa`;
+            document.getElementById("jemaat-stat-perjamuan").textContent = `${filtered.filter(a => a.perjamuan === "Aktif").length} Jiwa`;
+
+            // Apply Filters
+            if (searchVal) filtered = filtered.filter(a => a.nama.toLowerCase().includes(searchVal));
+            if (filterBaptis !== "ALL") filtered = filtered.filter(a => a.baptis === filterBaptis);
+            if (filterStatus !== "ALL") filtered = filtered.filter(a => a.status === filterStatus);
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-400 italic">Belum ada data penduduk terdaftar. Silahkan tambah nama baru.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((item, idx) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-medium text-gray-500">${idx + 1}</td>
+                    <td class="p-3 font-bold text-gray-800">${item.nama}</td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.baptis === 'Sudah Baptis' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'}">
+                            ${item.baptis}
+                        </span>
+                    </td>
+                    <td class="p-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.perjamuan === 'Aktif' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}">
+                            Perjamuan: ${item.perjamuan}
+                        </span>
+                    </td>
+                    <td class="p-3 font-medium text-gray-600">${item.pendidikan || '-'}</td>
+                    <td class="p-3 text-center">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${item.status === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                            ${item.status}
+                        </span>
+                    </td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="editAnggota('${item.id}')" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px]"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteAnggota('${item.id}')" class="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-[10px]"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openModalAnggota(id = null) {
+            document.getElementById("form-anggota").reset();
+            document.getElementById("anggota-id").value = "";
+            document.getElementById("anggota-jemaat").value = activeJemaat;
+            document.getElementById("modal-anggota-title").textContent = "Tambah Nama Penduduk Baru";
+
+            if (id) {
+                const item = dbAnggota.find(a => a.id === id);
+                if (item) {
+                    document.getElementById("modal-anggota-title").textContent = "Edit Data Penduduk";
+                    document.getElementById("anggota-id").value = item.id;
+                    document.getElementById("anggota-jemaat").value = item.jemaat;
+                    document.getElementById("anggota-nama").value = item.nama;
+                    document.getElementById("anggota-baptis").value = item.baptis;
+                    document.getElementById("anggota-perjamuan").value = item.perjamuan;
+                    document.getElementById("anggota-pendidikan").value = item.pendidikan;
+                    document.getElementById("anggota-status").value = item.status;
+                }
+            }
+            document.getElementById("modal-anggota").classList.remove("hidden");
+        }
+
+        function saveAnggota(e) {
+            e.preventDefault();
+            const id = document.getElementById("anggota-id").value;
+            const newItem = {
+                id: id || Date.now().toString(),
+                jemaat: document.getElementById("anggota-jemaat").value,
+                nama: document.getElementById("anggota-nama").value.trim(),
+                baptis: document.getElementById("anggota-baptis").value,
+                perjamuan: document.getElementById("anggota-perjamuan").value,
+                pendidikan: document.getElementById("anggota-pendidikan").value,
+                status: document.getElementById("anggota-status").value
+            };
+
+            if (id) {
+                const index = dbAnggota.findIndex(a => a.id === id);
+                if (index !== -1) dbAnggota[index] = newItem;
+                showToast("Data penduduk berhasil diperbarui!");
+            } else {
+                dbAnggota.push(newItem);
+                showToast("Nama penduduk baru berhasil ditambahkan!");
+            }
+
+            saveAllState();
+            closeModal("modal-anggota");
+            renderJemaatTable();
+        }
+
+        function editAnggota(id) {
+            openModalAnggota(id);
+        }
+
+        function deleteAnggota(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus nama penduduk ini?")) {
+                dbAnggota = dbAnggota.filter(a => a.id !== id);
+                saveAllState();
+                showToast("Data penduduk berhasil dihapus.", "danger");
+                renderJemaatTable();
+            }
+        }
+
+        function switchBaptisTab(tab) {
+            activeBaptisTab = tab;
+            const btnSudah = document.getElementById("tab-baptis-sudah");
+            const btnBelum = document.getElementById("tab-baptis-belum");
+
+            if (tab === "sudah") {
+                btnSudah.className = "py-2.5 px-4 font-bold text-xs border-b-2 border-gidi-blue text-gidi-blue flex items-center gap-2";
+                btnBelum.className = "py-2.5 px-4 font-bold text-xs border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center gap-2";
+            } else {
+                btnBelum.className = "py-2.5 px-4 font-bold text-xs border-b-2 border-amber-600 text-amber-600 flex items-center gap-2";
+                btnSudah.className = "py-2.5 px-4 font-bold text-xs border-b-2 border-transparent text-gray-500 hover:text-gray-700 flex items-center gap-2";
+            }
+            renderBaptisTable();
+        }
+
+        function renderBaptisTable() {
+            const tbody = document.getElementById("baptis-tbody");
+            tbody.innerHTML = "";
+
+            const targetStatus = activeBaptisTab === "sudah" ? "Sudah Baptis" : "Belum Baptis";
+            const list = dbAnggota.filter(a => a.baptis === targetStatus);
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400 italic">Tidak ada data untuk kategori ini.</td></tr>`;
+                return;
+            }
+
+            list.forEach((item, idx) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-medium text-gray-500">${idx + 1}</td>
+                    <td class="p-3 font-bold text-gray-800">${item.nama}</td>
+                    <td class="p-3 font-semibold text-gidi-blue">${item.jemaat}</td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-700">${item.perjamuan}</span></td>
+                    <td class="p-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">${item.status}</span></td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="editAnggota('${item.id}')" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px]"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteAnggota('${item.id}')" class="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-[10px]"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderEducationTable() {
+            const sa = dbAnggota.filter(a => a.pendidikan === "Sekolah Alkitab").length;
+            const sd = dbAnggota.filter(a => a.pendidikan === "SD").length;
+            const smp = dbAnggota.filter(a => a.pendidikan === "SMP").length;
+            const sma = dbAnggota.filter(a => a.pendidikan === "SMA").length;
+            const sarjana = dbAnggota.filter(a => a.pendidikan === "Sarjana").length;
+            const gsm = dbAnggota.filter(a => a.pendidikan === "Guru Sekolah Minggu").length;
+
+            document.getElementById("edu-count-sa").textContent = `${sa} Jiwa`;
+            document.getElementById("edu-count-sd").textContent = `${sd} Jiwa`;
+            document.getElementById("edu-count-smp").textContent = `${smp} Jiwa`;
+            document.getElementById("edu-count-sma").textContent = `${sma} Jiwa`;
+            document.getElementById("edu-count-sarjana").textContent = `${sarjana} Jiwa`;
+            document.getElementById("edu-count-gsm").textContent = `${gsm} Jiwa`;
+
+            const filterType = document.getElementById("edu-filter-type").value;
+            const tbody = document.getElementById("edu-tbody");
+            tbody.innerHTML = "";
+
+            let list = dbAnggota.filter(a => a.pendidikan && a.pendidikan !== "-");
+            if (filterType !== "ALL") list = list.filter(a => a.pendidikan === filterType);
+
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400 italic">Tidak ada data pendidikan terdaftar.</td></tr>`;
+                return;
+            }
+
+            list.forEach((item, idx) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-medium text-gray-500">${idx + 1}</td>
+                    <td class="p-3 font-bold text-gray-800">${item.nama}</td>
+                    <td class="p-3 font-semibold text-gidi-blue">${item.jemaat}</td>
+                    <td class="p-3 font-bold text-indigo-700">${item.pendidikan}</td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="editAnggota('${item.id}')" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px]"><i class="fas fa-edit"></i> Edit</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderHambaTable() {
+            const tbody = document.getElementById("hamba-tbody");
+            tbody.innerHTML = "";
+
+            if (dbHamba.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400 italic">Belum ada Hamba Tuhan terdaftar.</td></tr>`;
+                return;
+            }
+
+            dbHamba.forEach((item, idx) => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 text-center font-medium text-gray-500">${idx + 1}</td>
+                    <td class="p-3 font-extrabold text-gray-800">${item.nama}</td>
+                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold text-[10px]">${item.jabatan}</span></td>
+                    <td class="p-3 font-semibold text-gidi-blue">${item.jemaat}</td>
+                    <td class="p-3 text-gray-600">${item.keterangan || '-'}</td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="openModalHamba('${item.id}')" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px]"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteHamba('${item.id}')" class="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-[10px]"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openModalHamba(id = null) {
+            document.getElementById("form-hamba").reset();
+            document.getElementById("hamba-id").value = "";
+            document.getElementById("modal-hamba-title").textContent = "Tambah Hamba Tuhan";
+
+            if (id) {
+                const item = dbHamba.find(h => h.id === id);
+                if (item) {
+                    document.getElementById("modal-hamba-title").textContent = "Edit Hamba Tuhan";
+                    document.getElementById("hamba-id").value = item.id;
+                    document.getElementById("hamba-nama").value = item.nama;
+                    document.getElementById("hamba-jabatan").value = item.jabatan;
+                    document.getElementById("hamba-jemaat").value = item.jemaat;
+                    document.getElementById("hamba-keterangan").value = item.keterangan;
+                }
+            }
+            document.getElementById("modal-hamba").classList.remove("hidden");
+        }
+
+        function saveHamba(e) {
+            e.preventDefault();
+            const id = document.getElementById("hamba-id").value;
+            const newItem = {
+                id: id || Date.now().toString(),
+                nama: document.getElementById("hamba-nama").value.trim(),
+                jabatan: document.getElementById("hamba-jabatan").value.trim(),
+                jemaat: document.getElementById("hamba-jemaat").value,
+                keterangan: document.getElementById("hamba-keterangan").value.trim()
+            };
+
+            if (id) {
+                const idx = dbHamba.findIndex(h => h.id === id);
+                if (idx !== -1) dbHamba[idx] = newItem;
+                showToast("Data Hamba Tuhan diperbarui!");
+            } else {
+                dbHamba.push(newItem);
+                showToast("Hamba Tuhan baru berhasil ditambahkan!");
+            }
+
+            saveAllState();
+            closeModal("modal-hamba");
+            renderHambaTable();
+        }
+
+        function deleteHamba(id) {
+            if (confirm("Hapus data Hamba Tuhan ini?")) {
+                dbHamba = dbHamba.filter(h => h.id !== id);
+                saveAllState();
+                showToast("Data Hamba Tuhan berhasil dihapus.", "danger");
+                renderHambaTable();
+            }
+        }
+
+        function renderPembangunanGrid() {
+            const grid = document.getElementById("pembangunan-cards-grid");
+            grid.innerHTML = "";
+
+            if (dbPembangunan.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-8 text-center text-gray-400 bg-white rounded-xl border border-dashed border-gray-300">Belum ada laporan pembangunan terdaftar.</div>`;
+                return;
+            }
+
+            dbPembangunan.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition";
+                const imgUrl = item.foto || "https://placehold.co/600x400/0F4C81/FFFFFF?text=Foto+Pembangunan";
+
+                card.innerHTML = `
+                    <div class="h-44 bg-gray-200 relative overflow-hidden">
+                        <img src="${imgUrl}" alt="${item.judul}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/0F4C81/FFFFFF?text=Foto+Gereja';">
+                        <span class="absolute top-2 right-2 bg-orange-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                            ${item.status}
+                        </span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-gidi-blue uppercase">${item.jemaat}</span>
+                            <h3 class="font-bold text-gray-800 text-sm mt-0.5">${item.judul}</h3>
+                            <p class="text-xs text-gray-600 mt-2 line-clamp-3">${item.keterangan || 'Tidak ada deskripsi.'}</p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 mt-4 flex gap-2 justify-end">
+                            <button onclick="openModalPembangunan('${item.id}')" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow"><i class="fas fa-edit"></i> Edit</button>
+                            <button onclick="deletePembangunan('${item.id}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded shadow"><i class="fas fa-trash"></i> Hapus</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openModalPembangunan(id = null) {
+            document.getElementById("form-pembangunan").reset();
+            document.getElementById("pembangunan-id").value = "";
+            document.getElementById("modal-pembangunan-title").textContent = "Tambah Laporan Pembangunan";
+
+            if (id) {
+                const item = dbPembangunan.find(p => p.id === id);
+                if (item) {
+                    document.getElementById("modal-pembangunan-title").textContent = "Edit Laporan Pembangunan";
+                    document.getElementById("pembangunan-id").value = item.id;
+                    document.getElementById("pembangunan-judul").value = item.judul;
+                    document.getElementById("pembangunan-jemaat").value = item.jemaat;
+                    document.getElementById("pembangunan-status").value = item.status;
+                    document.getElementById("pembangunan-foto").value = item.foto;
+                    document.getElementById("pembangunan-keterangan").value = item.keterangan;
+                }
+            }
+            document.getElementById("modal-pembangunan").classList.remove("hidden");
+        }
+
+        function savePembangunan(e) {
+            e.preventDefault();
+            const id = document.getElementById("pembangunan-id").value;
+            const newItem = {
+                id: id || Date.now().toString(),
+                judul: document.getElementById("pembangunan-judul").value.trim(),
+                jemaat: document.getElementById("pembangunan-jemaat").value,
+                status: document.getElementById("pembangunan-status").value,
+                foto: document.getElementById("pembangunan-foto").value.trim(),
+                keterangan: document.getElementById("pembangunan-keterangan").value.trim()
+            };
+
+            if (id) {
+                const idx = dbPembangunan.findIndex(p => p.id === id);
+                if (idx !== -1) dbPembangunan[idx] = newItem;
+                showToast("Laporan pembangunan berhasil diperbarui!");
+            } else {
+                dbPembangunan.push(newItem);
+                showToast("Laporan pembangunan baru ditambahkan!");
+            }
+
+            saveAllState();
+            closeModal("modal-pembangunan");
+            renderPembangunanGrid();
+        }
+
+        function deletePembangunan(id) {
+            if (confirm("Hapus laporan pembangunan ini?")) {
+                dbPembangunan = dbPembangunan.filter(p => p.id !== id);
+                saveAllState();
+                showToast("Laporan pembangunan dihapus.", "danger");
+                renderPembangunanGrid();
+            }
+        }
+
+        function renderAsetGrid() {
+            const grid = document.getElementById("aset-cards-grid");
+            grid.innerHTML = "";
+
+            if (dbAset.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-8 text-center text-gray-400 bg-white rounded-xl border border-dashed border-gray-300">Belum ada aset terdaftar.</div>`;
+                return;
+            }
+
+            dbAset.forEach(item => {
+                const card = document.createElement("div");
+                card.className = "bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition";
+                const imgUrl = item.foto || "https://placehold.co/600x400/7C3AED/FFFFFF?text=Foto+Aset";
+
+                card.innerHTML = `
+                    <div class="h-44 bg-gray-200 relative overflow-hidden">
+                        <img src="${imgUrl}" alt="${item.nama}" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://placehold.co/600x400/7C3AED/FFFFFF?text=Aset+Gereja';">
+                        <span class="absolute top-2 right-2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
+                            ${item.kondisi}
+                        </span>
+                    </div>
+                    <div class="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-gidi-blue uppercase">${item.jemaat}</span>
+                            <h3 class="font-bold text-gray-800 text-sm mt-0.5">${item.nama}</h3>
+                            <p class="text-xs text-gray-600 mt-2 line-clamp-3">${item.keterangan || 'Tidak ada spesifikasi.'}</p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-100 mt-4 flex gap-2 justify-end">
+                            <button onclick="openModalAset('${item.id}')" class="px-3 py-1 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded shadow"><i class="fas fa-edit"></i> Edit</button>
+                            <button onclick="deleteAset('${item.id}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded shadow"><i class="fas fa-trash"></i> Hapus</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openModalAset(id = null) {
+            document.getElementById("form-aset").reset();
+            document.getElementById("aset-id").value = "";
+            document.getElementById("modal-aset-title").textContent = "Tambah Aset Gereja";
+
+            if (id) {
+                const item = dbAset.find(a => a.id === id);
+                if (item) {
+                    document.getElementById("modal-aset-title").textContent = "Edit Aset Gereja";
+                    document.getElementById("aset-id").value = item.id;
+                    document.getElementById("aset-nama").value = item.nama;
+                    document.getElementById("aset-jemaat").value = item.jemaat;
+                    document.getElementById("aset-kondisi").value = item.kondisi;
+                    document.getElementById("aset-foto").value = item.foto;
+                    document.getElementById("aset-keterangan").value = item.keterangan;
+                }
+            }
+            document.getElementById("modal-aset").classList.remove("hidden");
+        }
+
+        function saveAset(e) {
+            e.preventDefault();
+            const id = document.getElementById("aset-id").value;
+            const newItem = {
+                id: id || Date.now().toString(),
+                nama: document.getElementById("aset-nama").value.trim(),
+                jemaat: document.getElementById("aset-jemaat").value,
+                kondisi: document.getElementById("aset-kondisi").value,
+                foto: document.getElementById("aset-foto").value.trim(),
+                keterangan: document.getElementById("aset-keterangan").value.trim()
+            };
+
+            if (id) {
+                const idx = dbAset.findIndex(a => a.id === id);
+                if (idx !== -1) dbAset[idx] = newItem;
+                showToast("Aset berhasil diperbarui!");
+            } else {
+                dbAset.push(newItem);
+                showToast("Aset baru ditambahkan!");
+            }
+
+            saveAllState();
+            closeModal("modal-aset");
+            renderAsetGrid();
+        }
+
+        function deleteAset(id) {
+            if (confirm("Hapus aset gereja ini?")) {
+                dbAset = dbAset.filter(a => a.id !== id);
+                saveAllState();
+                showToast("Aset dihapus.", "danger");
+                renderAsetGrid();
+            }
+        }
+
+        function formatRupiah(num) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+        }
+
+        function renderKeuanganView() {
+            const sumKeDaerah = dbKeuangan.filter(k => k.kategori === "Setoran Dari Jemaat Ke Daerah").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKeKlasis = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke Klasis").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKeWilayah = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke Wilayah").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKePusat = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke BPP Pusat").reduce((a, b) => a + Number(b.nominal), 0);
+
+            document.getElementById("sum-ke-daerah").textContent = formatRupiah(sumKeDaerah);
+            document.getElementById("sum-ke-pusat").textContent = formatRupiah(sumKeKlasis + sumKeWilayah + sumKePusat);
+
+            // Table rendering
+            const tbody = document.getElementById("keuangan-tbody");
+            tbody.innerHTML = "";
+
+            if (dbKeuangan.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-gray-400 italic">Belum ada transaksi keuangan terdaftar.</td></tr>`;
+                return;
+            }
+
+            dbKeuangan.forEach(item => {
+                const tr = document.createElement("tr");
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="p-3 font-medium text-gray-600">${item.tanggal}</td>
+                    <td class="p-3 font-bold text-gray-800">${item.kategori}</td>
+                    <td class="p-3 font-semibold text-gidi-blue">${item.jemaat}</td>
+                    <td class="p-3 font-bold text-emerald-700">${formatRupiah(item.nominal)}</td>
+                    <td class="p-3 text-gray-600">${item.keterangan || '-'}</td>
+                    <td class="p-3 text-center space-x-1">
+                        <button onclick="openModalKeuangan('${item.id}')" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded text-[10px]"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick="deleteKeuangan('${item.id}')" class="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded text-[10px]"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Detail Chart
+            const ctxKeuDetail = document.getElementById("chart-keuangan-detail").getContext("2d");
+            if (chartKeuanganDetailInstance) chartKeuanganDetailInstance.destroy();
+            chartKeuanganDetailInstance = new Chart(ctxKeuDetail, {
+                type: 'bar',
+                data: {
+                    labels: ['Jemaat ke Daerah', 'Daerah ke Klasis', 'Daerah ke Wilayah', 'Daerah ke BPP Pusat'],
+                    datasets: [{
+                        label: 'Total Akumulasi Nominal (Rp)',
+                        data: [sumKeDaerah, sumKeKlasis, sumKeWilayah, sumKePusat],
+                        backgroundColor: ['#D4AF37', '#0F4C81', '#059669', '#7C3AED'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function openModalKeuangan(id = null) {
+            document.getElementById("form-keuangan").reset();
+            document.getElementById("keuangan-id").value = "";
+            document.getElementById("keuangan-tanggal").value = new Date().toISOString().split('T')[0];
+            document.getElementById("modal-keuangan-title").textContent = "Catat Transaksi Keuangan";
+
+            if (id) {
+                const item = dbKeuangan.find(k => k.id === id);
+                if (item) {
+                    document.getElementById("modal-keuangan-title").textContent = "Edit Transaksi Keuangan";
+                    document.getElementById("keuangan-id").value = item.id;
+                    document.getElementById("keuangan-kategori").value = item.kategori;
+                    document.getElementById("keuangan-jemaat").value = item.jemaat;
+                    document.getElementById("keuangan-nominal").value = item.nominal;
+                    document.getElementById("keuangan-tanggal").value = item.tanggal;
+                    document.getElementById("keuangan-keterangan").value = item.keterangan;
+                }
+            }
+            document.getElementById("modal-keuangan").classList.remove("hidden");
+        }
+
+        function saveKeuangan(e) {
+            e.preventDefault();
+            const id = document.getElementById("keuangan-id").value;
+            const newItem = {
+                id: id || Date.now().toString(),
+                kategori: document.getElementById("keuangan-kategori").value,
+                jemaat: document.getElementById("keuangan-jemaat").value,
+                nominal: Number(document.getElementById("keuangan-nominal").value),
+                tanggal: document.getElementById("keuangan-tanggal").value,
+                keterangan: document.getElementById("keuangan-keterangan").value.trim()
+            };
+
+            if (id) {
+                const idx = dbKeuangan.findIndex(k => k.id === id);
+                if (idx !== -1) dbKeuangan[idx] = newItem;
+                showToast("Transaksi keuangan diperbarui!");
+            } else {
+                dbKeuangan.push(newItem);
+                showToast("Transaksi keuangan ditambahkan!");
+            }
+
+            saveAllState();
+            closeModal("modal-keuangan");
+            renderKeuanganView();
+        }
+
+        function deleteKeuangan(id) {
+            if (confirm("Hapus transaksi keuangan ini?")) {
+                dbKeuangan = dbKeuangan.filter(k => k.id !== id);
+                saveAllState();
+                showToast("Transaksi dihapus.", "danger");
+                renderKeuanganView();
+            }
+        }
+
+        function triggerPrintReport() {
+            // Fill print content dynamically
+            const printTbody = document.getElementById("print-tbody-jemaat");
+            printTbody.innerHTML = "";
+
+            JEMAAT_LIST.forEach(jName => {
+                const listJ = dbAnggota.filter(a => a.jemaat === jName);
+                const pop = listJ.length;
+                const bSudah = listJ.filter(a => a.baptis === "Sudah Baptis").length;
+                const bBelum = listJ.filter(a => a.baptis === "Belum Baptis").length;
+                const perjamuan = listJ.filter(a => a.perjamuan === "Aktif").length;
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td class="border border-black p-1.5 font-bold">${jName}</td>
+                    <td class="border border-black p-1.5 text-center">${pop} Jiwa</td>
+                    <td class="border border-black p-1.5 text-center">${bSudah}</td>
+                    <td class="border border-black p-1.5 text-center">${bBelum}</td>
+                    <td class="border border-black p-1.5 text-center">${perjamuan}</td>
+                `;
+                printTbody.appendChild(tr);
+            });
+
+            // Education summary print
+            const sa = dbAnggota.filter(a => a.pendidikan === "Sekolah Alkitab").length;
+            const sd = dbAnggota.filter(a => a.pendidikan === "SD").length;
+            const smp = dbAnggota.filter(a => a.pendidikan === "SMP").length;
+            const sma = dbAnggota.filter(a => a.pendidikan === "SMA").length;
+            const sarjana = dbAnggota.filter(a => a.pendidikan === "Sarjana").length;
+            const gsm = dbAnggota.filter(a => a.pendidikan === "Guru Sekolah Minggu").length;
+
+            document.getElementById("print-education-summary").innerHTML = `
+                <div><strong>Sekolah Alkitab:</strong> ${sa} Jiwa</div>
+                <div><strong>Tingkat SD:</strong> ${sd} Jiwa</div>
+                <div><strong>Tingkat SMP:</strong> ${smp} Jiwa</div>
+                <div><strong>Tingkat SMA/SMK:</strong> ${sma} Jiwa</div>
+                <div><strong>Sarjana:</strong> ${sarjana} Jiwa</div>
+                <div><strong>Guru Sek. Minggu:</strong> ${gsm} Jiwa</div>
+            `;
+
+            // Financial summary print
+            const sumKeDaerah = dbKeuangan.filter(k => k.kategori === "Setoran Dari Jemaat Ke Daerah").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKeKlasis = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke Klasis").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKeWilayah = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke Wilayah").reduce((a, b) => a + Number(b.nominal), 0);
+            const sumKePusat = dbKeuangan.filter(k => k.kategori === "Setoran Daerah Ke BPP Pusat").reduce((a, b) => a + Number(b.nominal), 0);
+
+            document.getElementById("print-financial-summary").innerHTML = `
+                <div><strong>• Total Setoran Kas dari Jemaat ke Daerah:</strong> ${formatRupiah(sumKeDaerah)}</div>
+                <div><strong>• Total Setoran Kas dari Daerah ke Klasis:</strong> ${formatRupiah(sumKeKlasis)}</div>
+                <div><strong>• Total Setoran Kas dari Daerah ke Wilayah:</strong> ${formatRupiah(sumKeWilayah)}</div>
+                <div><strong>• Total Setoran Kas dari Daerah ke BPP Pusat:</strong> ${formatRupiah(sumKePusat)}</div>
+            `;
+
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("print-date").textContent = new Date().toLocaleDateString('id-ID', options);
+
+            window.print();
+        }
+
+        window.onload = function() {
+            // Initial render
+            renderDashboard();
+        };
+    </script>
+</body>
+</html>
